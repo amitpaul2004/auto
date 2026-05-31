@@ -1,7 +1,7 @@
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { ArrowLeft, ArrowRight } from 'lucide-react';
 
-const IMAGES = [
+const IMAGES_DATA = [
   {
     src: 'https://fifth-gentle-45902158.figma.site/_components/v2/4de492f6d9cf8244ad5293233e5c6f52407d42fc/1.02464a56.png',
     bg: '#F4845F',
@@ -34,11 +34,88 @@ const IMAGES = [
     ghostText: 'CHILLY',
     desc: 'The epitome of cozy style. Dressed in sky-blue winter wear with clean details and custom collector packaging.',
   },
+  {
+    src: '/5.png',
+    bg: '#F0B839',
+    panel: '#F2C761',
+    title: 'CHIC GIRL',
+    ghostText: 'CHICKY',
+    desc: 'Basking in golden warmth. Dressed in a charming chick-yellow hoodie with high-fidelity soft-vinyl texturing.',
+    needsMultiply: true,
+  },
+  {
+    src: '/6.png',
+    bg: '#805CB5',
+    panel: '#9677C7',
+    title: 'DINO BOY',
+    ghostText: 'DINO',
+    desc: 'Sturdy, playful, and legendary. Featuring custom dino-scale accents, soft-knit hood, and vibrant grape tone.',
+    needsMultiply: true,
+  },
+  {
+    src: '/7.png',
+    bg: '#DE4747',
+    panel: '#E36666',
+    title: 'PANDA GIRL',
+    ghostText: 'PANDA',
+    desc: 'Playful, wild, and incredibly cozy. Handcrafted details inspired by red pandas with a crimson-red collection aura.',
+    needsMultiply: true,
+  },
 ];
 
 const GRAIN_SVG_URI = `data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="200" height="200"><filter id="noise"><feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="4" stitchTiles="stitch"/></filter><rect width="200" height="200" filter="url(%23noise)" opacity="0.08"/></svg>`;
 
+// Helper function to remove solid white background in the client browser with smooth anti-aliased edges
+function cleanImageBackground(src: string): Promise<string> {
+  return new Promise((resolve) => {
+    const img = new Image();
+    img.src = src;
+    img.onload = () => {
+      const canvas = document.createElement('canvas');
+      canvas.width = img.naturalWidth;
+      canvas.height = img.naturalHeight;
+      const ctx = canvas.getContext('2d');
+      if (!ctx) {
+        resolve(src);
+        return;
+      }
+      ctx.drawImage(img, 0, 0);
+      const imgData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+      const data = imgData.data;
+
+      // Filter out pixels close to pure white using Euclidean vector distance with smooth anti-aliasing
+      for (let i = 0; i < data.length; i += 4) {
+        const r = data[i];
+        const g = data[i + 1];
+        const b = data[i + 2];
+
+        // Euclidean distance from pure white (255, 255, 255)
+        const dist = Math.sqrt(
+          Math.pow(255 - r, 2) +
+          Math.pow(255 - g, 2) +
+          Math.pow(255 - b, 2)
+        );
+
+        if (dist < 18) {
+          data[i + 3] = 0; // Pure transparent for background
+        } else if (dist < 42) {
+          // Smooth blend alpha for anti-aliasing borders/shadows
+          const factor = (dist - 18) / (42 - 18);
+          data[i + 3] = Math.min(data[i + 3], Math.floor(factor * 255));
+        }
+      }
+
+      ctx.putImageData(imgData, 0, 0);
+      resolve(canvas.toDataURL('image/png'));
+    };
+    img.onerror = () => {
+      resolve(src);
+    };
+  });
+}
+
 export default function App() {
+  const [images, setImages] = useState(IMAGES_DATA);
   const [activeIndex, setActiveIndex] = useState<number>(0);
   const [isAnimating, setIsAnimating] = useState<boolean>(false);
   const [isMobile, setIsMobile] = useState<boolean>(
@@ -49,12 +126,31 @@ export default function App() {
   const [displayTextIndex, setDisplayTextIndex] = useState<number>(0);
   const [textOpacity, setTextOpacity] = useState<number>(1);
 
-  // Preload all 4 images on mount
+  const N = images.length;
+
+  // Process generated white-background images on mount and pre-cache all of them
   useEffect(() => {
-    IMAGES.forEach((image) => {
-      const img = new Image();
-      img.src = image.src;
-    });
+    const processAllImages = async () => {
+      const processed = await Promise.all(
+        IMAGES_DATA.map(async (item) => {
+          if (item.needsMultiply) {
+            try {
+              const transparentSrc = await cleanImageBackground(item.src);
+              return { ...item, src: transparentSrc };
+            } catch (err) {
+              console.error('Failed to clean image background', err);
+            }
+          }
+          // Normal preloading
+          const img = new Image();
+          img.src = item.src;
+          return item;
+        })
+      );
+      setImages(processed);
+    };
+
+    processAllImages();
 
     const handleResize = () => {
       setIsMobile(window.innerWidth < 640);
@@ -84,9 +180,9 @@ export default function App() {
 
     setActiveIndex((prev) => {
       if (direction === 'next') {
-        return (prev + 1) % 4;
+        return (prev + 1) % N;
       } else {
-        return (prev + 3) % 4;
+        return (prev + N - 1) % N;
       }
     });
 
@@ -95,14 +191,14 @@ export default function App() {
     }, 650);
   };
 
-  // Derive roles
-  const centerIndex = activeIndex;
-  const leftIndex = (activeIndex + 3) % 4;
-  const rightIndex = (activeIndex + 1) % 4;
-  const backIndex = (activeIndex + 2) % 4;
+  const getRoleStyle = (index: number): React.CSSProperties => {
+    // Relative circular distance from activeIndex (supports any N)
+    let diff = index - activeIndex;
+    if (diff < -Math.floor(N / 2)) diff += N;
+    if (diff > Math.floor(N / 2)) diff -= N;
 
-  const getRoleStyle = (index: number) => {
-    if (index === centerIndex) {
+    if (diff === 0) {
+      // Center
       return {
         transform: `translateX(-50%) scale(${isMobile ? 1.25 : 1.68})`,
         filter: 'blur(0px)',
@@ -113,7 +209,8 @@ export default function App() {
         bottom: isMobile ? '22%' : '0',
       };
     }
-    if (index === leftIndex) {
+    if (diff === -1) {
+      // Left
       return {
         transform: 'translateX(-50%) scale(1)',
         filter: 'blur(2px)',
@@ -124,7 +221,8 @@ export default function App() {
         bottom: isMobile ? '32%' : '12%',
       };
     }
-    if (index === rightIndex) {
+    if (diff === 1) {
+      // Right
       return {
         transform: 'translateX(-50%) scale(1)',
         filter: 'blur(2px)',
@@ -135,25 +233,25 @@ export default function App() {
         bottom: isMobile ? '32%' : '12%',
       };
     }
-    // backIndex
-    if (index === backIndex) {
-      return {
-        transform: 'translateX(-50%) scale(1)',
-        filter: 'blur(4px)',
-        opacity: 1,
-        zIndex: 5,
-        left: '50%',
-        height: isMobile ? '13%' : '22%',
-        bottom: isMobile ? '32%' : '12%',
-      };
-    }
-    return {};
+
+    // Background slides (fade out and push to back)
+    const isAdjacentBack = Math.abs(diff) === 2;
+    return {
+      transform: 'translateX(-50%) scale(0.85)',
+      filter: 'blur(4px)',
+      opacity: isAdjacentBack ? 0.3 : 0,
+      zIndex: 5,
+      left: '50%',
+      height: isMobile ? '13%' : '22%',
+      bottom: isMobile ? '32%' : '12%',
+      pointerEvents: 'none',
+    };
   };
 
   return (
     <div
       style={{
-        backgroundColor: IMAGES[activeIndex].bg,
+        backgroundColor: images[activeIndex].bg,
         transition: 'background-color 650ms cubic-bezier(0.4, 0, 0.2, 1)',
         fontFamily: "'Inter', sans-serif",
       }}
@@ -177,7 +275,7 @@ export default function App() {
           className="absolute inset-x-0 flex items-center justify-center pointer-events-none select-none"
           style={{ zIndex: 2, top: '18%' }}
         >
-          {IMAGES.map((image, idx) => {
+          {images.map((image, idx) => {
             const isActive = idx === activeIndex;
             return (
               <div
@@ -232,9 +330,9 @@ export default function App() {
 
         {/* 4. Carousel (with card showcases sliding behind figurines) */}
         <div style={{ zIndex: 3 }} className="absolute inset-0">
-          {IMAGES.map((image, index) => {
+          {images.map((image, index) => {
             const roleStyle = getRoleStyle(index);
-            const isCenter = index === centerIndex;
+            const isCenter = index === activeIndex;
             return (
               <div
                 key={index}
@@ -291,13 +389,13 @@ export default function App() {
               style={{ letterSpacing: '0.02em', textShadow: '0 2px 10px rgba(0, 0, 0, 0.15)' }}
               className="text-white opacity-95 uppercase font-bold text-base sm:text-[22px] mb-2 sm:mb-3 leading-none"
             >
-              {IMAGES[displayTextIndex].title}
+              {images[displayTextIndex].title}
             </h2>
             <p
               style={{ lineHeight: 1.6, textShadow: '0 1px 8px rgba(0, 0, 0, 0.12)' }}
               className="hidden sm:block text-xs sm:text-sm text-white opacity-85"
             >
-              {IMAGES[displayTextIndex].desc}
+              {images[displayTextIndex].desc}
             </p>
           </div>
 
@@ -332,7 +430,7 @@ export default function App() {
           style={{ zIndex: 60 }}
           className="absolute bottom-6 left-1/2 -translate-x-1/2 flex gap-2 sm:gap-3"
         >
-          {IMAGES.map((_, idx) => {
+          {images.map((_, idx) => {
             const isActive = idx === activeIndex;
             return (
               <button
