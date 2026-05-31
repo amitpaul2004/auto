@@ -309,24 +309,7 @@ export default function App() {
           TOONHUB
         </div>
 
-        {/* HUD Stats Details (Top Right) */}
-        <div
-          style={{ zIndex: 60 }}
-          className="absolute top-6 right-4 sm:right-8 flex items-center gap-6 text-white text-[10px] sm:text-xs font-medium tracking-[0.15em] opacity-80 pointer-events-none select-none"
-        >
-          <div className="hidden md:flex flex-col items-end">
-            <span className="text-[9px] opacity-60">CATALOGUE</span>
-            <span>EDITION 2026.B</span>
-          </div>
-          <div className="h-6 w-[1px] bg-white/20 hidden md:block" />
-          <div className="flex items-center gap-2">
-            <span className="relative flex h-2 w-2">
-              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-              <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
-            </span>
-            <span>COLLECTION LIVE</span>
-          </div>
-        </div>
+
 
         {/* 4. Carousel (with card showcases sliding behind figurines) */}
         <div style={{ zIndex: 3 }} className="absolute inset-0">
