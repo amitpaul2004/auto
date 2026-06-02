@@ -1,73 +1,69 @@
-# React + TypeScript + Vite
+<div align="center">
+  <img src="https://capsule-render.vercel.app/api?type=waving&color=timeGradient&height=250&section=header&text=TOONHUB%20🎠&fontSize=80&fontAlignY=35&desc=Premium%203D%20Character%20Figurine%20Carousel&descAlignY=55&descAlign=50" alt="ToonHub Header" />
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+  <br />
+  
+  ![React](https://img.shields.io/badge/React-20232A?style=for-the-badge&logo=react&logoColor=61DAFB)
+  ![TypeScript](https://img.shields.io/badge/TypeScript-007ACC?style=for-the-badge&logo=typescript&logoColor=white)
+  ![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-38B2AC?style=for-the-badge&logo=tailwind-css&logoColor=white)
+  ![Vite](https://img.shields.io/badge/Vite-B73BFE?style=for-the-badge&logo=vite&logoColor=FFD62E)
 
-Currently, two official plugins are available:
+  <p align="center">
+    <strong>A highly polished, interactive React application showcasing 3D character figurines with dynamic glassmorphism and real-time image processing.</strong>
+  </p>
+</div>
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+---
 
-## React Compiler
+## ✨ Features
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+- **🚀 Circular Carousel Navigation:** A mathematically flawless, infinitely looping circular slider utilizing Euclidean offsets for depth, scaling, and z-index positioning.
+- **🎨 Dynamic Theme Sync:** The entire viewport, including the textured grain background, dynamically transitions colors to match the aura of the active figurine.
+- **✨ Client-Side Chromakey Filtering:** Automatically removes solid white backgrounds from generated assets in real-time using a custom Euclidean vector distance Canvas algorithm with anti-aliasing.
+- **💎 Glassmorphic UI:** Premium frosted-glass collector cards (`backdrop-blur`) that shift and expand during user interaction.
+- **🛸 Micro-Animations:** Floating "hover" animations (`translateY` + rotation), pulsing HUD indicators, and animated SVG noise overlays give the app a tactile, living feel.
 
-## Expanding the ESLint configuration
+## 🛠️ Tech Stack
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+*   **Frontend:** React 18
+*   **Language:** TypeScript
+*   **Styling:** Tailwind CSS + Vanilla CSS Keyframes
+*   **Icons:** `lucide-react`
+*   **Build Tool:** Vite
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+## 🚀 Quick Start
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+Get the project running locally in just a few seconds!
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+1. **Clone the repository**
+   ```bash
+   git clone https://github.com/amitpaul2004/toonhub-carousel.git
+   cd toonhub-carousel
+   ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+2. **Install dependencies**
+   ```bash
+   npm install
+   ```
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+3. **Start the development server**
+   ```bash
+   npm run dev
+   ```
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+4. **Build for production**
+   ```bash
+   npm run build
+   ```
+
+## 🧠 Advanced: Dynamic Chromakey
+
+This project implements a unique, zero-CORS client-side image processing solution. When rendering images with solid backgrounds (like our generated models), the application mounts an HTML5 `<canvas>`, computes the Euclidean distance of each pixel from pure white `(255, 255, 255)`, and applies a feathered alpha-transparency mask. 
+
+This ensures that characters blend flawlessly onto their glassmorphic backing cards without needing pre-edited transparent PNGs!
+
+---
+
+<div align="center">
+  <i>Built with ❤️ for smooth animations and beautiful UIs.</i>
+</div>
