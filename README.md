@@ -26,10 +26,10 @@
 
 ## 🚀 About The Project
 
-*(💡 Pro-Tip: Replace this block with a GIF recording of your app in action!)*
 <div align="center">
   <img src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Objects/Camera%20with%20Flash.png" alt="Camera" width="50"/>
-  <p><code>&lt;img src="./preview.gif" alt="Toonhub Preview" width="100%"&gt;</code></p>
+  <img width="1342" height="583" alt="image" src="https://github.com/user-attachments/assets/f4cd7a81-058c-4d9d-89da-ff5a3ac6f4b6" />
+
 </div>
 
 TOONHUB is a state-of-the-art collector's portal UI designed to showcase 3D figurines. It moves away from generic grids and introduces a highly immersive, interactive carousel with synchronized animations, glassmorphism, and a custom-built chromakey engine.
