@@ -122,3 +122,5 @@ Contributions are what make the open source community such an amazing place to l
 
 ---
 <p align="center">Built with <img src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Smilies/Yellow%20Heart.png" width="18"/> and lots of <img src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Food/Hot%20Beverage.png" width="18"/></p>
+
+---
